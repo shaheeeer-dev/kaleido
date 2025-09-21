@@ -7,7 +7,8 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private String fullName;
+    private String firstName;
+    private String lastName;
     private String bio;
     private String profilePicUrl;
     private LocalDateTime createdAt;
@@ -17,19 +18,20 @@ public class User {
     public User() {
     }
 
-    public User(int userId, String username, String password, String email, String fullName, String bio, String profilePicUrl, LocalDateTime createdAt, String phoneNumber) {
+    public User(int userId, String username, String password, String email, String firstName,  String lastName, String bio, String profilePicUrl, LocalDateTime createdAt, String phoneNumber) {
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.fullName = fullName;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.bio = bio;
         this.profilePicUrl = profilePicUrl;
         this.createdAt = createdAt;
         this.phoneNumber = phoneNumber;
     }
 
-    public int getUserId() {
+    public int getUserID() {
         return userId;
     }
 
@@ -61,12 +63,20 @@ public class User {
         this.email = email;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public String getBio() {
@@ -100,4 +110,5 @@ public class User {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
 }
