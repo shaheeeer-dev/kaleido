@@ -11,7 +11,7 @@ public class DatabaseConnection {
 
     public static Connection getConnection() throws SQLException {
         try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
