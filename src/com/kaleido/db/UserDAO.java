@@ -12,9 +12,8 @@ public class UserDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            // For now, we'll store password as plain text (we'll add hashing next)
             stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword()); // We'll hash this later
+            stmt.setString(2, user.getPassword());
             stmt.setString(3, user.getEmail());
             stmt.setString(4, user.getFirstName());
             stmt.setString(5, user.getLastName());
