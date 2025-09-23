@@ -2,24 +2,24 @@ package com.kaleido.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class comment {
+public class Comment {
     private int id;
-    private int PostId;
-    private int UserId;
+    private int postId;
+    private int userId;
     private String text;
 
-    private static List<comment> comments = new ArrayList<>();
+    private static List<Comment> comments = new ArrayList<>();
 
-    public comment(int id, int PostId, int UserId, String text) {
+    public Comment(int id, int PostId, int UserId, String text) {
         this.id = id;
-        this.PostId = PostId;
-        this.UserId = UserId;
+        this.postId = PostId;
+        this.userId = UserId;
         this.text = text;
     }
 
     public int getId() { return id; }
-    public int getPostId() { return PostId; }
-    public int getUserId() { return UserId; }
+    public int getPostId() { return postId; }
+    public int getUserId() { return userId; }
     public String getText() { return text; }
 
     public void setText(String text) { this.text = text; }
@@ -28,13 +28,13 @@ public class comment {
     public String toString() {
         return "Comment{" +
                 "id=" + id +
-                ", postId=" + PostId +
-                ", userId=" + UserId +
+                ", postId=" + postId +
+                ", userId=" + userId +
                 ", text='" + text + '\'' +
                 '}';
     }
 
-    public static void addComment(comment comment) {
+    public static void addComment(Comment comment) {
         comments.add(comment);
         System.out.println("Comment added: " + comment.getText());
     }
@@ -49,7 +49,7 @@ public class comment {
     }
 
     public static void editComment(int id, String newText) {
-        for (comment c : comments) {
+        for (Comment c : comments) {
             if (c.getId() == id) {
                 c.setText(newText);
                 System.out.println("Comment with ID " + id + " updated to: " + newText);
@@ -64,7 +64,7 @@ public class comment {
             System.out.println("No comments yet.");
         } else {
             System.out.println("All Comments:");
-            for (comment c : comments) {
+            for (Comment c : comments) {
                 System.out.println(c);
             }
         }
