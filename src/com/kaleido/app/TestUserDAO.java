@@ -7,7 +7,6 @@ public class TestUserDAO {
     public static void main(String[] args) {
         UserDAO userDAO = new UserDAO();
 
-        // Test creating a user
         User testUser = new User();
         testUser.setUsername("joe_smith");
         testUser.setPassword("test123");
@@ -20,7 +19,6 @@ public class TestUserDAO {
         boolean created = userDAO.createUser(testUser);
         System.out.println("User created: " + created);
 
-        // Test retrieving the user
         User foundUser = userDAO.getUserByUsername("john_doe");
         if (foundUser != null) {
             System.out.println("SUCCESS! Found user: " + foundUser.getFirstName());
