@@ -29,7 +29,7 @@ public class UserDAO {
         }
     }
 
-    public User getUserByUsername(String username) {
+    public static User getUserByUsername(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();

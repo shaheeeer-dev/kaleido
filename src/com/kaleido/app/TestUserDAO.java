@@ -6,8 +6,8 @@ import com.kaleido.models.User;
 public class TestUserDAO {
     public static void main(String[] args) {
         UserDAO userDAO = new UserDAO();
-
         User testUser = new User();
+
         testUser.setUsername("joe_smith");
         testUser.setPassword("test123");
         testUser.setEmail("john@email.com");
