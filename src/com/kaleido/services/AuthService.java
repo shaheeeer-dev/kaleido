@@ -67,7 +67,7 @@ public class AuthService {
 
     public void logout() {
         if (currentUser != null) {
-            System.out.println("Goodbye " + currentUser.getFirstName());
+            System.out.println("You have logged_out from: " + currentUser.getFirstName());
         }
         this.currentUser = null;
     }
