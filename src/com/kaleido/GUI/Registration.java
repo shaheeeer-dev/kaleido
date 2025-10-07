@@ -1,88 +1,135 @@
 package com.kaleido.GUI;
 
-import com.kaleido.services.AuthService;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class Registration extends JFrame {
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JTextField emailField;
-    private JTextField firstNameField;
-    private JTextField lastNameField;
-    private JTextField bioField;
-    private JTextField phoneField;
-    private JButton registerButton;
-    private AuthService authService;
+public class Registration{
+    public static void main(String[] args) {
 
-    public Registration() {
-        authService = new AuthService();
-        setTitle("Kaleido - Sign Up");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(400, 300);
-        setLocationRelativeTo(null);
+        JFrame frame = new JFrame();
+        frame.setTitle("Kaleido | Registration");
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Create components
-        usernameField = new JTextField(15);
-        passwordField = new JPasswordField(15);
-        emailField = new JTextField(15);
-        firstNameField = new JTextField(15);
-        lastNameField = new JTextField(15);
-        bioField = new JTextField(15);
-        phoneField = new JTextField(15);
-        registerButton = new JButton("Register");
+        JPanel bgPanel = new JPanel();
+        bgPanel.setBackground(new Color(205, 84, 86));
 
-        // Set layout
-        setLayout(new GridLayout(8, 2, 10, 10));
+        bgPanel.setLayout(new GridBagLayout());
 
-        // Add components
-        add(new JLabel("Username:"));
-        add(usernameField);
-        add(new JLabel("Password:"));
-        add(passwordField);
-        add(new JLabel("Email:"));
-        add(emailField);
-        add(new JLabel("First Name:"));
-        add(firstNameField);
-        add(new JLabel("Last Name:"));
-        add(lastNameField);
-        add(new JLabel("Bio:"));
-        add(bioField);
-        add(new JLabel("Phone:"));
-        add(phoneField);
-        add(registerButton);
+        JPanel registerBox = new JPanel(new GridBagLayout());
+        registerBox.setBackground(new Color(0x202020));
+        registerBox.setPreferredSize(new Dimension(400,630));
+        registerBox.setBorder(BorderFactory.createEmptyBorder(24, 28, 24, 28));
 
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                register();
-            }
-        });
-    }
 
-    private void register() {
-        String username = usernameField.getText();
-        String password = new String(passwordField.getPassword());
-        String email = emailField.getText();
-        String firstName = firstNameField.getText();
-        String lastName = lastNameField.getText();
-        String bio = bioField.getText();
-        String phone = phoneField.getText();
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 6, 10, 6);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
 
-        if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in required fields (username, password, email).");
-            return;
-        }
+        // Logo
+        JLabel logoLabel = new JLabel();
+        ImageIcon logo = new ImageIcon("src/com/kaleido/GUI/Kaleidologo.png");
+        Image scaledLogo = logo.getImage().getScaledInstance(110, 110, Image.SCALE_SMOOTH);
+        logoLabel.setIcon(new ImageIcon(scaledLogo));
+        logoLabel.setText("KALEIDO");
+        logoLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
+        logoLabel.setForeground(Color.WHITE);logoLabel.add(Box.createRigidArea(new Dimension(0, 10)));
+        logoLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+        logoLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
+        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        boolean success = authService.registerUser(username, password, email, firstName, lastName, bio, phone);
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Registration successful! You can now login.");
-            dispose(); // Close the registration window
-        } else {
-            JOptionPane.showMessageDialog(this, "Registration failed. Username might be taken.");
-        }
+        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.weighty = 0.0;
+        registerBox.add(logoLabel, gbc);
+
+        gbc.gridy = 1;
+        registerBox.add(Box.createRigidArea(new Dimension(0, 0)), gbc);
+
+        // First Name Field
+        JTextField fNameField = new JTextField();
+        fNameField.setPreferredSize(new Dimension(200, 40));
+        fNameField.setBackground(new Color(0x353535));
+        fNameField.setForeground(Color.WHITE);
+        fNameField.setCaretColor(Color.WHITE);
+        fNameField.setBorder(BorderFactory.createTitledBorder(null, "First Name", 0, 0,
+                new Font("SansSerif", Font.PLAIN, 12), Color.WHITE));
+        gbc.gridy = 2;
+        registerBox.add(fNameField, gbc);
+
+        // Last Name Field
+        JTextField lNameField = new JTextField();
+        lNameField.setPreferredSize(new Dimension(200, 40));
+        lNameField.setBackground(new Color(0x353535));
+        lNameField.setForeground(Color.WHITE);
+        lNameField.setCaretColor(Color.WHITE);
+        lNameField.setBorder(BorderFactory.createTitledBorder(null, "Last Name", 0, 0,
+                new Font("SansSerif", Font.PLAIN, 12), Color.WHITE));
+        gbc.gridy = 3;
+        registerBox.add(lNameField, gbc);
+
+        // Username Field
+        JTextField usernameField = new JTextField();
+        usernameField.setPreferredSize(new Dimension(200, 40));
+        usernameField.setBackground(new Color(0x353535));
+        usernameField.setForeground(Color.WHITE);
+        usernameField.setCaretColor(Color.WHITE);
+        usernameField.setBorder(BorderFactory.createTitledBorder(null, "Username", 0, 0,
+                new Font("SansSerif", Font.PLAIN, 12), Color.WHITE));
+        gbc.gridy = 4;
+        registerBox.add(usernameField, gbc);
+
+        // Email Field
+        JTextField emailField = new JTextField();
+        emailField.setPreferredSize(new Dimension(200, 40));
+        emailField.setBackground(new Color(0x353535));
+        emailField.setForeground(Color.WHITE);
+        emailField.setCaretColor(Color.WHITE);
+        emailField.setBorder(BorderFactory.createTitledBorder(null, "Email", 0, 0,
+                new Font("SansSerif", Font.PLAIN, 12), Color.WHITE));
+        gbc.gridy = 5;
+        registerBox.add(emailField, gbc);
+
+        // Password Field
+        JPasswordField passwordField = new JPasswordField();
+        passwordField.setPreferredSize(new Dimension(200, 40));
+        passwordField.setBackground(new Color(0x353535));
+        passwordField.setForeground(Color.WHITE);
+        passwordField.setCaretColor(Color.WHITE);
+        passwordField.setBorder(BorderFactory.createTitledBorder(null, "Password", 0, 0,
+                new Font("SansSerif", Font.PLAIN, 12), Color.WHITE));
+        gbc.gridy = 6;
+        registerBox.add(passwordField, gbc);
+
+        JButton register = new JButton("Register");
+        register.setBackground(new Color(43, 86, 136));
+        register.setPreferredSize(new Dimension(0,44));
+        register.setForeground(Color.white);
+        register.setOpaque(true);
+        register.setBorderPainted(false);
+        register.setFocusPainted(false);
+        register.setFont(new Font("SansSerif", Font.BOLD, 14));
+
+        gbc.gridy = 7;
+        gbc.insets = new Insets(18, 6, 6, 6);
+        registerBox.add(register, gbc);
+
+        // Sign Up Label
+        JLabel loginLabel = new JLabel("Already have an account? Login");
+        loginLabel.setForeground(new Color(0x3999c1));
+        loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        loginLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        gbc.gridy = 8;
+        gbc.weighty = 0;
+        gbc.insets = new Insets(10, 6, 6, 6);
+        registerBox.add(loginLabel, gbc);
+
+        bgPanel.add(registerBox);
+        frame.add(bgPanel);
+        frame.setVisible(true);
     }
 }
