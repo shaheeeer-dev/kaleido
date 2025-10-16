@@ -4,8 +4,6 @@ import com.kaleido.services.AuthService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class Login {
 
@@ -62,6 +60,12 @@ public class Login {
         if (logo.getImageLoadStatus() == MediaTracker.COMPLETE) {
             Image scaledLogo = logo.getImage().getScaledInstance(110, 110, Image.SCALE_SMOOTH);
             logoLabel.setIcon(new ImageIcon(scaledLogo));
+            logoLabel.setText("KALEIDO");
+            logoLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
+            logoLabel.setForeground(Color.WHITE);logoLabel.add(Box.createRigidArea(new Dimension(0, 10)));
+            logoLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+            logoLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
+            logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
         } else {
             logoLabel.setText("KALEIDO");
             logoLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
@@ -74,7 +78,7 @@ public class Login {
         loginBox.add(logoLabel, gbc);
 
         gbc.gridy = 1;
-        loginBox.add(Box.createRigidArea(new Dimension(0, 6)), gbc);
+        loginBox.add(Box.createRigidArea(new Dimension(0, 0)), gbc);
 
         // Username Field
         JTextField usernameField = new JTextField();
@@ -109,25 +113,11 @@ public class Login {
         loginBtn.setFocusPainted(false);
         loginBtn.setFont(new Font("SansSerif", Font.BOLD, 14));
 
-        // Login Button Hover Effects
-        loginBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                loginBtn.setBackground(new Color(35, 70, 120));
-                loginBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                loginBtn.setBackground(new Color(43, 86, 136));
-                loginBtn.setCursor(Cursor.getDefaultCursor());
-            }
-        });
-
         // Login Button Action
         loginBtn.addActionListener(e -> {
             String username = usernameField.getText().trim();
-            String password = new String(passwordField.getPassword());
+            String password = new String(passwordField.getPassword()
+            );
 
             // Input validation
             if (username.isEmpty() || password.isEmpty()) {
@@ -142,24 +132,27 @@ public class Login {
             boolean loginSuccess = authService.login(username, password);
 
             if (loginSuccess) {
-                JOptionPane.showMessageDialog(frame,
-                        "Login successful! Welcome to Kaleido.",
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
-
-                // TODO: Open main application window
-                System.out.println("Opening main application...");
-                // frame.dispose(); // Close login window
-                // new MainApplication(); // Open main app
-
+                frame.dispose();
+                new Feed(authService.getCurrentUser());
             } else {
                 JOptionPane.showMessageDialog(frame,
                         "Invalid username or password. Please try again.",
                         "Login Failed",
                         JOptionPane.ERROR_MESSAGE);
-
-                // Clear password field
                 passwordField.setText("");
+            }
+        });
+
+        // Hover
+        loginBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                loginBtn.setBackground(new Color(63, 106, 156)); // lighter blue
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                loginBtn.setBackground(new Color(43, 86, 136)); // original blue
             }
         });
 
@@ -171,35 +164,27 @@ public class Login {
         gbc.weighty = 1.0;
         loginBox.add(Box.createVerticalGlue(), gbc);
 
-        // Sign Up Label
-        JLabel signupLabel = new JLabel("Don't have an account? Sign up");
+        JLabel signupLabel = new JLabel("Don't have an account? Register");
         signupLabel.setForeground(new Color(0x3999c1));
         signupLabel.setHorizontalAlignment(SwingConstants.CENTER);
         signupLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        // Sign Up Label Hover Effects
-        signupLabel.addMouseListener(new MouseAdapter() {
+        signupLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                // TODO: Open registration window
-                JOptionPane.showMessageDialog(frame,
-                        "Registration feature coming soon!",
-                        "Sign Up",
-                        JOptionPane.INFORMATION_MESSAGE);
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                frame.dispose(); // close login window
+                new Registration(); // open registration
+            }
 
-                // For now, you can test with:
-                // frame.dispose();
-                // new Registration();
+
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                signupLabel.setForeground(Color.WHITE); // hover effect
             }
 
             @Override
-            public void mouseEntered(MouseEvent e) {
-                signupLabel.setForeground(new Color(0x57b8e0));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                signupLabel.setForeground(new Color(0x3999c1));
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                signupLabel.setForeground(new Color(0x3999c1)); // reset color
             }
         });
 
@@ -215,7 +200,5 @@ public class Login {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        // Set focus to username field
-        SwingUtilities.invokeLater(() -> usernameField.requestFocus());
     }
 }
