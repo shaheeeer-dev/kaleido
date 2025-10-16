@@ -172,10 +172,20 @@ public class Registration {
                 return;
             }
 
+            //Password confirmation
+            if (!password.equals(conPassword)) {
+                JOptionPane.showMessageDialog(frame,
+                        "Passwords don't match. Please re-enter.",
+                        "Password Mismatch",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             // Register Attempt
             boolean registerSuccess = authservice.registerUser(username, password, email, firstName, lastName,"","");
 
             if (registerSuccess){
+                authservice.login(username, password);
                 frame.dispose();
                 new Feed(authservice.getCurrentUser());
             }
@@ -185,15 +195,6 @@ public class Registration {
                         "Registration Failed",
                         JOptionPane.ERROR_MESSAGE);
                 passwordField.setText("");
-            }
-
-            //Password confirmation
-            if (!password.equals(conPassword)) {
-                JOptionPane.showMessageDialog(frame,
-                        "Passwords don't match. Please re-enter.",
-                        "Password Mismatch",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
             }
         });
 
