@@ -1,24 +1,48 @@
 package com.kaleido.GUI;
 
+import com.kaleido.services.AuthService;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class Registration{
-    public static void main(String[] args) {
+public class Registration {
 
-        JFrame frame = new JFrame();
+    private JFrame frame;
+    private AuthService authservice;
+
+    public Registration() {
+        this.authservice  = new AuthService();
+        initializeUI();
+    }
+    void initializeUI() {
+
+        frame = new JFrame();
         frame.setTitle("Kaleido | Registration");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel bgPanel = new JPanel();
-        bgPanel.setBackground(new Color(205, 84, 86));
+        JPanel bgPanel = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                int width = getWidth();
+                int height = getHeight();
+
+                GradientPaint gp = new GradientPaint(
+                        0, 0, new Color(43, 86, 136),
+                        width, height, new Color(205, 84, 86)
+                );
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, width, height);
+            }
+        };
 
         bgPanel.setLayout(new GridBagLayout());
 
         JPanel registerBox = new JPanel(new GridBagLayout());
         registerBox.setBackground(new Color(0x202020));
-        registerBox.setPreferredSize(new Dimension(400,630));
+        registerBox.setPreferredSize(new Dimension(430,630));
         registerBox.setBorder(BorderFactory.createEmptyBorder(24, 28, 24, 28));
 
 
@@ -104,32 +128,130 @@ public class Registration{
         gbc.gridy = 6;
         registerBox.add(passwordField, gbc);
 
+        // Confirm Password Field
+        JPasswordField conPasswordField = new JPasswordField();
+        conPasswordField.setPreferredSize(new Dimension(200, 40));
+        conPasswordField.setBackground(new Color(0x353535));
+        conPasswordField.setForeground(Color.WHITE);
+        conPasswordField.setCaretColor(Color.WHITE);
+        conPasswordField.setBorder(BorderFactory.createTitledBorder(null, "Confirm Password", 0, 0,
+                new Font("SansSerif", Font.PLAIN, 12), Color.WHITE));
+        gbc.gridy = 7;
+        registerBox.add(conPasswordField, gbc);
+
+        //Button
         JButton register = new JButton("Register");
         register.setBackground(new Color(43, 86, 136));
-        register.setPreferredSize(new Dimension(0,44));
+        register.setPreferredSize(new Dimension(0,48));
         register.setForeground(Color.white);
         register.setOpaque(true);
+        register.setContentAreaFilled(true);
         register.setBorderPainted(false);
         register.setFocusPainted(false);
         register.setFont(new Font("SansSerif", Font.BOLD, 14));
 
-        gbc.gridy = 7;
+        // Register Button Action
+        register.addActionListener(e -> {
+            String firstName = fNameField.getText().trim();
+            String lastName = lNameField.getText().trim();
+            String username = usernameField.getText().trim();
+            String email = emailField.getText().trim();
+            String password = new String(passwordField.getPassword());
+            String conPassword = new String(conPasswordField.getPassword());
+
+            // Input Validation
+            if (fNameField.getText().trim().isEmpty() || lNameField.getText().trim().isEmpty() ||
+                    usernameField.getText().trim().isEmpty() ||
+                    emailField.getText().trim().isEmpty() ||
+                    password.isEmpty() || conPassword.isEmpty()) {
+
+                JOptionPane.showMessageDialog(frame,
+                        "Please fill in all fields.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Register Attempt
+            boolean registerSuccess = authservice.registerUser(username, password, email, firstName, lastName,"","");
+
+            if (registerSuccess){
+                frame.dispose();
+                new Feed(authservice.getCurrentUser());
+            }
+            else{
+                JOptionPane.showMessageDialog(frame,
+                        "Registration failed. Please check your details or try a different username/email.",
+                        "Registration Failed",
+                        JOptionPane.ERROR_MESSAGE);
+                passwordField.setText("");
+            }
+
+            //Password confirmation
+            if (!password.equals(conPassword)) {
+                JOptionPane.showMessageDialog(frame,
+                        "Passwords don't match. Please re-enter.",
+                        "Password Mismatch",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        });
+
+
+        // Hover
+        register.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                register.setBackground(new Color(63, 106, 156)); // lighter blue
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                register.setBackground(new Color(43, 86, 136)); // original blue
+            }
+        });
+
+        gbc.gridy = 8;
         gbc.insets = new Insets(18, 6, 6, 6);
         registerBox.add(register, gbc);
 
-        // Sign Up Label
+
+        // Login Label
         JLabel loginLabel = new JLabel("Already have an account? Login");
         loginLabel.setForeground(new Color(0x3999c1));
         loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
         loginLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        gbc.gridy = 8;
+        loginLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                frame.dispose(); // close registration window
+                new Login(); // open login
+            }
+
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                loginLabel.setForeground(Color.WHITE); // hover effect
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                loginLabel.setForeground(new Color(0x3999c1)); // reset color
+            }
+        });
+
+        gbc.gridy = 9;
         gbc.weighty = 0;
         gbc.insets = new Insets(10, 6, 6, 6);
         registerBox.add(loginLabel, gbc);
 
+
         bgPanel.add(registerBox);
         frame.add(bgPanel);
         frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(Registration::new);
     }
 }
