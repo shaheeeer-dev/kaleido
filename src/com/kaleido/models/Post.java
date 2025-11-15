@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class Post {
     private int postId;
     private int userId;
-    private String userName;
+    private String username;
     private int communityId;
     private String contentText;
     private String imageUrl;
@@ -15,10 +15,10 @@ public class Post {
     public Post() {
     }
 
-    public Post(int postId, int userId, String userName, int communityId, String contentText, String imageUrl, LocalDateTime createdAt) {
+    public Post(int postId, int userId, String username, int communityId, String contentText, String imageUrl, LocalDateTime createdAt) {
         this.postId = postId;
         this.userId = userId;
-        this.userName = userName;
+        this.username = username;
         this.communityId = communityId;
         this.contentText = contentText;
         this.imageUrl = imageUrl;
@@ -41,12 +41,12 @@ public class Post {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public int getCommunityId() {
