@@ -53,7 +53,7 @@ public class AuthService {
         boolean passwordMatches = BCrypt.checkpw(password, user.getPassword());
         if (passwordMatches) {
             this.currentUser = user;
-            System.out.println("Login successful! Welcome " + user.getFirstName());
+            System.out.println("Login successful! Welcome " + user.getUsername());
             return true;
         } else {
             System.out.println("Invalid password.");
@@ -67,7 +67,7 @@ public class AuthService {
 
     public void logout() {
         if (currentUser != null) {
-            System.out.println("You have logged out from: " + currentUser.getFirstName());
+            System.out.println("You have logged out from: " + currentUser.getUsername());
         }
         this.currentUser = null;
     }
