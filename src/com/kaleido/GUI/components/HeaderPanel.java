@@ -1,5 +1,7 @@
 package com.kaleido.GUI.components;
 
+import com.kaleido.GUI.Login;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -27,6 +29,12 @@ public class HeaderPanel extends JPanel {
             rightPanel.setBackground(Color.BLACK);
             rightPanel.add(logOut);
             add(rightPanel, BorderLayout.EAST);
+
+            logOut.addActionListener(e -> {
+                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+                topFrame.dispose();
+                new Login();
+            });
         }
     }
 }
