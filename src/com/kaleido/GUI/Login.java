@@ -133,7 +133,7 @@ public class Login {
 
             if (loginSuccess) {
                 frame.dispose();
-                new Feed(authService.getCurrentUser());
+                new Feeed(authService.getCurrentUser());
             } else {
                 JOptionPane.showMessageDialog(frame,
                         "Invalid username or password. Please try again.",
@@ -147,12 +147,12 @@ public class Login {
         loginBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {
-                loginBtn.setBackground(new Color(63, 106, 156)); // lighter blue
+                loginBtn.setBackground(new Color(63, 106, 156));
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent e) {
-                loginBtn.setBackground(new Color(43, 86, 136)); // original blue
+                loginBtn.setBackground(new Color(43, 86, 136));
             }
         });
 
@@ -172,8 +172,8 @@ public class Login {
         signupLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                frame.dispose(); // close login window
-                new Registration(); // open registration
+                frame.dispose();
+                new Registration();
             }
 
 
@@ -184,7 +184,7 @@ public class Login {
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent e) {
-                signupLabel.setForeground(new Color(0x3999c1)); // reset color
+                signupLabel.setForeground(new Color(0x3999c1));
             }
         });
 

@@ -1,6 +1,12 @@
 package com.kaleido.GUI;
 
+import com.kaleido.GUI.components.HeaderPanel;
+import com.kaleido.GUI.components.LeftSidebarPanel;
+import com.kaleido.GUI.components.PostPanel;
 import com.kaleido.models.*;
+import com.kaleido.db.PostDAO;
+import com.kaleido.models.Post;
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,72 +19,34 @@ public class Profile {
         initializeGUI();
     }
     void initializeGUI(){
-        frame = new JFrame();
-        frame.setTitle("Kaleido | Profile");
+        frame = new JFrame("Kaleido | Profile");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        //Main Container
         JPanel mainContainer = new JPanel(new BorderLayout());
 
-        //Header
-        JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(Color.BLACK);
-        header.setPreferredSize(new Dimension(0,60));
-        header.setBorder(BorderFactory.createEmptyBorder(5,20,5,20));
-
-        //LOGO
-        JLabel logoLabel = new JLabel("Kaleido");
-        ImageIcon logo = new ImageIcon("src/com/kaleido/GUI/Kaleidologo.png");
-        if (logo.getImageLoadStatus() == MediaTracker.COMPLETE) {
-            Image scaledLogo = logo.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-            logoLabel.setIcon(new ImageIcon(scaledLogo));
-        }
-        logoLabel.setForeground(Color.WHITE);
-        logoLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
-        header.add(logoLabel, BorderLayout.WEST);
-
-        //Logout btn
-        JPanel logOutPanel = new JPanel();
-        logOutPanel.setBackground(Color.BLACK);
-        logOutPanel.setBorder(BorderFactory.createEmptyBorder(5,20,5,20));
-
-        JButton logOut = new JButton("Logout");
-        logOut.setForeground(Color.BLACK);
-        logOutPanel.add(logOut);
-
-        header.add(logOutPanel, BorderLayout.EAST);
-
-        // MAIN CONTENT
+        // Header + Layout
+        mainContainer.add(new HeaderPanel(true), BorderLayout.NORTH);
         JPanel mainContent = new JPanel(new BorderLayout());
+        mainContainer.add(mainContent, BorderLayout.CENTER);
+        mainContent.add(new LeftSidebarPanel(currentUser), BorderLayout.WEST);
 
-        // Left Sidebar Container
-        JPanel leftSidebarContainer = new JPanel();
-        leftSidebarContainer.setLayout(new BorderLayout());
-        leftSidebarContainer.setBackground(new Color(19, 19, 20));
-        leftSidebarContainer.setPreferredSize(new Dimension(250, 0));
-
-        // Right Sidebar
         JPanel rightSidebar = new JPanel();
-        rightSidebar.setBackground(new Color(21,21,23));
+        rightSidebar.setBackground(Color.BLACK);
         rightSidebar.setPreferredSize(new Dimension(300, 0));
+        mainContent.add(rightSidebar, BorderLayout.EAST);
+
 
         // Profile
         JPanel profile = new JPanel();
-        profile.setLayout(new BorderLayout());
+        profile.setLayout(new BoxLayout(profile, BoxLayout.Y_AXIS));
         profile.setBorder(BorderFactory.createMatteBorder(0, 2, 0, 2, Color.GRAY));
 //        profile.setBackground(new Color(21,21,23));
 
         // PFP PANEL
         JPanel pfpPanel = new JPanel();
         pfpPanel.setBackground(new Color(21, 21, 23));
-        pfpPanel.setPreferredSize(new Dimension(0, 200));
-
-        pfpPanel.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.CENTER;
+//        pfpPanel.setPreferredSize(new Dimension(0, 200));
 
         String profilePicPath = currentUser.getProfilePicUrl();
         ImageIcon pfpIcon;
@@ -90,15 +58,74 @@ public class Profile {
         Image img = pfpIcon.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
         JLabel pfpLabel = new JLabel(new ImageIcon(img));
 
-        pfpPanel.add(pfpLabel, gbc);
-        profile.add(pfpPanel, BorderLayout.NORTH);
+        pfpPanel.add(pfpLabel);
+
+        //Name
+        JPanel nameDisplay = new JPanel();
+        nameDisplay.setBackground(new Color(21, 21, 23));
+//        nameDisplay.setPreferredSize(new Dimension(886, 60));
+        nameDisplay.setBorder(BorderFactory.createEmptyBorder(5,20,1,20));
+
+        JLabel name = new JLabel();
+        String fullName = currentUser.getFirstName() + " " + currentUser.getLastName();
+        name.setText(fullName);
+        name.setForeground(Color.WHITE);
+        name.setFont(new Font("SansSerif", Font.BOLD, 18));
+
+        nameDisplay.add(name);
+
+        // Bio section
+        JPanel bioPanel = new JPanel(new BorderLayout());
+        bioPanel.setBackground(new Color(21, 21, 23));
+        bioPanel.setBorder(BorderFactory.createEmptyBorder(5,20,1,20));
+
+        JTextArea bioLabel = new JTextArea(currentUser.getBio());
+        bioLabel.setLineWrap(true);
+        bioLabel.setWrapStyleWord(true);
+        bioLabel.setEditable(false);
+        bioLabel.setOpaque(false);
+        bioLabel.setForeground(Color.WHITE);
+        bioLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+
+        bioPanel.add(bioLabel, BorderLayout.CENTER);
+
+        //Edit profile
+        JPanel editPanel = new JPanel();
+        editPanel.setBackground(new Color(21, 21, 23));
+        editPanel.setBorder(BorderFactory.createEmptyBorder(5,20,5,20));
+
+        JButton editbtn = new JButton("Edit Profile");
+        editbtn.setForeground(new Color(21,21,23));
+        editPanel.add(editbtn);
+
+        // Panels in order
+        profile.add(pfpPanel);
+        profile.add(nameDisplay);
+        profile.add(bioPanel);
+        profile.add(editPanel);
+
+        // Scrollable posts section
+        JPanel postsPanel = new JPanel();
+        postsPanel.setBackground(new Color(21, 21, 23));
+        postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
+
+        PostDAO postDAO = new PostDAO();
+        List<Post> userPosts = postDAO.getPostsByUser(currentUser.getUserID());
+
+        for(Post post : userPosts){
+            PostPanel postPanel = new PostPanel(post);
+            postsPanel.add(postPanel);
+            postsPanel.add(Box.createRigidArea(new Dimension(0,10)));
+        }
+
+        JScrollPane scrollPane = new JScrollPane(postsPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBorder(null);
+
+        profile.add(scrollPane);
 
         //Assemble Everything
-        mainContainer.add(header, BorderLayout.NORTH);
-        mainContainer.add(mainContent, BorderLayout.CENTER);
-        mainContent.add(leftSidebarContainer, BorderLayout.WEST);
         mainContent.add(profile, BorderLayout.CENTER);
-        mainContent.add(rightSidebar, BorderLayout.EAST);
 
         frame.setContentPane(mainContainer);
         frame.setVisible(true);
@@ -106,7 +133,10 @@ public class Profile {
 
     public static void main(String[] args) {
         User dummyUser = new User();
+        dummyUser.setFirstName("Muhammad");
+        dummyUser.setLastName("Shaheer");
         dummyUser.setUsername("_Shaheer");
-        new Profile(dummyUser).initializeGUI();
+        dummyUser.setBio("BSE’28 COMSATS | Aspiring Backend Developer | Focused on Java, OOP, and Database Systems | Eager to Build Real-World Projects");
+        new Profile(dummyUser);
     }
 }
