@@ -49,11 +49,33 @@ public class UserDAO {
                 user.setBio(rs.getString("bio"));
                 user.setPhoneNumber(rs.getString("phone_number"));
                 user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                user.setProfilePicUrl(rs.getString("profile_pic_url"));
                 return user;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public boolean updateUser(User user) {
+        String sql = "UPDATE users SET firstName=?, lastName=?, phone_number=?, bio=?, profile_pic_url=? WHERE user_id=?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, user.getFirstName());
+            stmt.setString(2, user.getLastName());
+            stmt.setString(3, user.getPhoneNumber());
+            stmt.setString(4, user.getBio());
+            stmt.setString(5, user.getProfilePicUrl());
+            stmt.setInt(6, user.getUserID());
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
