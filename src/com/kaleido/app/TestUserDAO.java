@@ -10,7 +10,7 @@ public class TestUserDAO {
 
         testUser.setUsername("joe_smith");
         testUser.setPassword("test123");
-        testUser.setEmail("john@email.com");
+        testUser.setEmail("john6@email.com");
         testUser.setFirstName("John");
         testUser.setLastName("Doe");
         testUser.setBio("First test user");
