@@ -1,7 +1,5 @@
 package com.kaleido.GUI;
 
-import com.kaleido.GUI.components.HeaderPanel;
-import com.kaleido.GUI.components.LeftSidebarPanel;
 import com.kaleido.models.User;
 
 import javax.imageio.ImageIO;
@@ -10,17 +8,17 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
-public class info {
-    JFrame frame;
+public class About extends JPanel {
     User currentUser;
+    private MainFrame mainFrame;
     private JLabel name;
     private JTextArea detailsLabel;
     private JLabel pfpLabel;
-    private JPanel appInfoPanel;
     private JScrollPane mainScrollPane;
 
-    public info(User user) {
+    public About(User user, MainFrame mainFrame) {
         this.currentUser = user;
+        this.mainFrame = mainFrame;
         try {
             initializeGUI();
         } catch (Exception e) {
@@ -33,22 +31,7 @@ public class info {
     }
 
     void initializeGUI() throws Exception {
-        frame = new JFrame("Kaleido | App Info");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-
-        JPanel mainContainer = new JPanel(new BorderLayout());
-
-        // Header + Layout
-        mainContainer.add(new HeaderPanel(true), BorderLayout.NORTH);
-        JPanel mainContent = new JPanel(new BorderLayout());
-        mainContainer.add(mainContent, BorderLayout.CENTER);
-        mainContent.add(new LeftSidebarPanel(currentUser), BorderLayout.WEST);
-
-        JPanel rightSidebar = new JPanel();
-        rightSidebar.setBackground(Color.BLACK);
-        rightSidebar.setPreferredSize(new Dimension(300, 0));
-        mainContent.add(rightSidebar, BorderLayout.EAST);
+        this.setLayout(new BorderLayout());
 
         // main content panel(scrollable)
         JPanel scrollableContentPanel = new JPanel();
@@ -66,7 +49,7 @@ public class info {
         pfpPanel.add(pfpLabel);
 
         // Use your Cloudinary profile picture
-        String profilePicPath = "https://res.cloudinary.com/defyrn0le/image/upload/v1763494798/ahgwizfvo06ab3ndt9zf.jpg";
+        String profilePicPath = "https://res.cloudinary.com/defyrn0le/image/upload/v1764160321/Kaleidologo_geg5tn.png";
         ImageIcon pfpIcon = null;
 
         // Try loading profile image safely
@@ -103,7 +86,7 @@ public class info {
         nameDisplay.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
         nameDisplay.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        name = new JLabel("Muhammad Shaheer");
+        name = new JLabel("Kaleido - Social Media Application");
         name.setForeground(Color.WHITE);
         name.setFont(new Font("SansSerif", Font.BOLD, 24));
 
@@ -116,9 +99,9 @@ public class info {
         detailsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         String appInfoText =
-                "FA24-BSE-104\n\n" +
-                        "Object Oriented Programming & Database Project\n\n" +
-                        "🌐 Kaleido - Social Media Application\n\n" +
+                "Kaleido is a modern social media platform designed for students and creators to share content, discover new ideas, and connect with communities. The app features a dynamic feed, user profiles, post creation, and an intuitive sidebar navigation, all wrapped in a sleek, dark-themed UI.\n\n" +
+                "Developer: Muhammad Shaheer\nStudent ID: FA24-BSE-104\nDegree Program: BSE (Software Engineering)\n" +
+                        "COMSATS University Islamabad, Sahiwal Campus\n\n" +
                         "📚 Project Overview:\n" +
                         "• A full-stack social media platform built with Java Swing\n" +
                         "• Cloud-based image storage using Cloudinary\n" +
@@ -126,7 +109,7 @@ public class info {
                         "• Modern UI with dark theme design\n\n" +
                         "🛠️ Technologies Used:\n" +
                         "• Frontend: Java Swing, AWT\n" +
-                        "• Backend: Core Java, JDBC\n" +
+                        "• Backend: Core Java\n" +
                         "• Database: MySQL\n" +
                         "• Cloud Storage: Cloudinary API\n" +
                         "• Version Control: Git\n\n" +
@@ -141,7 +124,8 @@ public class info {
                         "• Database design and management\n" +
                         "• GUI development with Swing\n" +
                         "• API integration\n" +
-                        "• Software architecture patterns";
+                        "• Software architecture patterns\n\n"+
+                        "📌Developer's Portfolio:\n";
 
         detailsLabel = new JTextArea(appInfoText);
         detailsLabel.setLineWrap(true);
@@ -152,32 +136,31 @@ public class info {
         detailsLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
         detailsLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Add scroll pane for details in case content is too long
-        JScrollPane detailsScrollPane = new JScrollPane(detailsLabel);
-        detailsScrollPane.setBorder(BorderFactory.createLineBorder(new Color(60, 60, 60)));
-        detailsScrollPane.setBackground(new Color(21, 21, 23));
-        detailsScrollPane.getViewport().setBackground(new Color(21, 21, 23));
-        detailsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        detailsScrollPane.setPreferredSize(new Dimension(800, 400));
+        // Add detailsLabel directly to detailsPanel (no scroll pane)
+        detailsPanel.add(detailsLabel, BorderLayout.CENTER);
 
-        detailsPanel.add(detailsScrollPane, BorderLayout.CENTER);
-
-        // Close button panel
+        // Portfolio button panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(21, 21, 23));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 40, 20));
         buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JButton closeBtn = new JButton("Close");
-        closeBtn.setForeground(Color.WHITE);
-        closeBtn.setBackground(new Color(70, 70, 70));
-        closeBtn.setFocusPainted(false);
-        closeBtn.setFont(new Font("SansSerif", Font.BOLD, 14));
-        closeBtn.setPreferredSize(new Dimension(120, 40));
+        JButton PortfolioBtn = new JButton("View Portfolio");
+        PortfolioBtn.setForeground(Color.BLACK);
+        PortfolioBtn.setBackground(new Color(70, 70, 70));
+        PortfolioBtn.setFocusPainted(false);
+        PortfolioBtn.setFont(new Font("SansSerif", Font.BOLD, 14));
+        PortfolioBtn.setPreferredSize(new Dimension(120, 40));
 
-        closeBtn.addActionListener(e -> frame.dispose());
+        PortfolioBtn.addActionListener(e -> {
+            try {
+                Desktop.getDesktop().browse(new java.net.URI("https://shaheer-dev.netlify.app/"));
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Failed to open portfolio link", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
-        buttonPanel.add(closeBtn);
+        buttonPanel.add(PortfolioBtn);
 
         // Assemble ALL content into the scrollable panel
         scrollableContentPanel.add(pfpPanel);
@@ -191,20 +174,16 @@ public class info {
         mainScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         mainScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        // Add the main scroll pane to center
-        mainContent.add(mainScrollPane, BorderLayout.CENTER);
-
-        frame.setContentPane(mainContainer);
-        frame.setVisible(true);
+        // Add the main scroll pane to this panel center
+        this.add(mainScrollPane, BorderLayout.CENTER);
     }
 
     public static void main(String[] args) {
-        // Test the AppInfo frame
+        // Test the AboutPage panel in a frame
         SwingUtilities.invokeLater(() -> {
-            User dummyUser = new User();
-            dummyUser.setFirstName("Test");
-            dummyUser.setLastName("User");
-            new info(dummyUser);
+            JFrame testFrame = new JFrame("Test AboutPage");
+            testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            testFrame.setSize(1000, 700);
         });
     }
 }
