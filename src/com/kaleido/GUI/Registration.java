@@ -187,7 +187,7 @@ public class Registration {
             if (registerSuccess){
                 authservice.login(username, password);
                 frame.dispose();
-                new Feeed(authservice.getCurrentUser());
+                new MainFrame(authservice.getCurrentUser());
             }
             else{
                 JOptionPane.showMessageDialog(frame,
