@@ -133,7 +133,7 @@ public class Login {
 
             if (loginSuccess) {
                 frame.dispose();
-                new Feeed(authService.getCurrentUser());
+                new MainFrame(authService.getCurrentUser());
             } else {
                 JOptionPane.showMessageDialog(frame,
                         "Invalid username or password. Please try again.",
