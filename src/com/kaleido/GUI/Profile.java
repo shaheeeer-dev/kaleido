@@ -1,5 +1,6 @@
 package com.kaleido.GUI;
 
+import com.kaleido.GUI.components.PostPanel;
 import com.kaleido.models.*;
 import com.kaleido.db.PostDAO;
 import com.kaleido.models.Post;
@@ -20,9 +21,11 @@ public class Profile extends JPanel {
     private JLabel pfpLabel;
     private JPanel profileContent;
     private JScrollPane scrollPane;
+    private User viewedUser;
 
-    public Profile(User user, MainFrame mainFrame) {
-        this.currentUser = user;
+    public Profile(User viewedUser, User currentUser, MainFrame mainFrame) {
+        this.currentUser = currentUser;
+        this.viewedUser = viewedUser;
         this.mainFrame = mainFrame;
 
         setLayout(new BorderLayout());
@@ -33,6 +36,7 @@ public class Profile extends JPanel {
         profileContent.setLayout(new BoxLayout(profileContent, BoxLayout.Y_AXIS));
         profileContent.setBorder(BorderFactory.createMatteBorder(0, 2, 0, 2, Color.GRAY));
         profileContent.setBackground(new Color(21, 21, 23));
+
         // PFP PANEL
         JPanel pfpPanel = new JPanel();
         pfpPanel.setBackground(new Color(21, 21, 23));
@@ -40,7 +44,7 @@ public class Profile extends JPanel {
         pfpLabel = new JLabel();
         pfpPanel.add(pfpLabel);
 
-        String profilePicPath = currentUser.getProfilePicUrl();
+        String profilePicPath = viewedUser.getProfilePicUrl();
         ImageIcon pfpIcon = null;
 
         // Try loading profile image safely
@@ -71,14 +75,13 @@ public class Profile extends JPanel {
         Image scaled = pfpIcon.getImage().getScaledInstance(180, 180, Image.SCALE_SMOOTH);
         pfpLabel.setIcon(new ImageIcon(scaled));
 
-
         // Name panel
         JPanel nameDisplay = new JPanel();
         nameDisplay.setBackground(new Color(21, 21, 23));
         nameDisplay.setBorder(BorderFactory.createEmptyBorder(5, 20, 1, 20));
 
         name = new JLabel();
-        String fullName = currentUser.getFirstName() + " " + currentUser.getLastName();
+        String fullName = viewedUser.getFirstName() + " " + viewedUser.getLastName();
         name.setText(fullName);
         name.setForeground(Color.WHITE);
         name.setFont(new Font("SansSerif", Font.BOLD, 18));
@@ -90,7 +93,7 @@ public class Profile extends JPanel {
         bioPanel.setBackground(new Color(21, 21, 23));
         bioPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 1, 20));
 
-        bioLabel = new JTextArea(currentUser.getBio());
+        bioLabel = new JTextArea(viewedUser.getBio());
         bioLabel.setLineWrap(true);
         bioLabel.setWrapStyleWord(true);
         bioLabel.setEditable(false);
@@ -119,109 +122,50 @@ public class Profile extends JPanel {
         profileContent.add(pfpPanel);
         profileContent.add(nameDisplay);
         profileContent.add(bioPanel);
-        profileContent.add(editPanel);
+        if (currentUser.getUserID() == viewedUser.getUserID()) {
+            profileContent.add(editPanel);
+        }
 
         // Scrollable posts section
-        JPanel postsPanel= new JPanel();
+        JPanel postsPanel = new JPanel();
         postsPanel.setBackground(new Color(21, 21, 23));
         postsPanel.setLayout(new BoxLayout(postsPanel, BoxLayout.Y_AXIS));
 
         PostDAO postDAO = new PostDAO();
-        List<Post> userPosts = postDAO.getPostsByUser(currentUser.getUserID());
+        List<Post> userPosts = postDAO.getPostsByUser(viewedUser.getUserID());
+
+        // Center alignment wrapper for posts
+        JPanel centeredPostsPanel = new JPanel();
+        centeredPostsPanel.setLayout(new BoxLayout(centeredPostsPanel, BoxLayout.Y_AXIS));
+        centeredPostsPanel.setBackground(new Color(21, 21, 23));
 
         for (Post post : userPosts) {
-            JPanel postPanel = createPostPanel(post); // Use the new method
-            postsPanel.add(postPanel);
-            postsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            // Use the PostPanel component with 4:5 ratio
+            PostPanel postPanel = new PostPanel(post);
+            postPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            centeredPostsPanel.add(postPanel);
+            centeredPostsPanel.add(Box.createRigidArea(new Dimension(0, 15)));
         }
+
+        // If no posts, show message
+        if (userPosts.isEmpty()) {
+            JLabel noPostsLabel = new JLabel("No posts yet", SwingConstants.CENTER);
+            noPostsLabel.setForeground(Color.GRAY);
+            noPostsLabel.setFont(new Font("SansSerif", Font.ITALIC, 26));
+            noPostsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            centeredPostsPanel.add(noPostsLabel);
+        }
+
+        postsPanel.add(centeredPostsPanel);
 
         scrollPane = new JScrollPane(postsPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBorder(null);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
         profileContent.add(scrollPane);
 
-        // Add profileContent panel to this JPanel
         add(profileContent, BorderLayout.CENTER);
-    }
-
-    private JPanel createPostPanel(Post post) {
-        JPanel postPanel = new JPanel();
-        postPanel.setLayout(new BorderLayout());
-        postPanel.setBackground(new Color(35, 35, 37));
-        postPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(60, 60, 60)),
-                BorderFactory.createEmptyBorder(15, 15, 15, 15)
-        ));
-        postPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 400)); // Increased height for images
-
-        // Header with username and timestamp
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setBackground(new Color(35, 35, 37));
-
-        JLabel usernameLabel = new JLabel(post.getUsername());
-        usernameLabel.setForeground(Color.WHITE);
-        usernameLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
-
-        JLabel timeLabel = new JLabel(formatTimestamp(post.getCreatedAt()));
-        timeLabel.setForeground(Color.GRAY);
-        timeLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
-
-        headerPanel.add(usernameLabel, BorderLayout.WEST);
-        headerPanel.add(timeLabel, BorderLayout.EAST);
-
-        // Post content
-        JTextArea contentArea = new JTextArea(post.getContentText());
-        contentArea.setLineWrap(true);
-        contentArea.setWrapStyleWord(true);
-        contentArea.setEditable(false);
-        contentArea.setBackground(new Color(35, 35, 37));
-        contentArea.setForeground(Color.WHITE);
-        contentArea.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        contentArea.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-
-        // Image display (if exists)
-        JPanel imagePanel = new JPanel(new BorderLayout());
-        imagePanel.setBackground(new Color(35, 35, 37));
-
-        if (post.getImageUrl() != null && !post.getImageUrl().isEmpty()) {
-            try {
-                // Load image from Cloudinary URL
-                ImageIcon originalIcon = new ImageIcon(new java.net.URL(post.getImageUrl()));
-                Image scaledImage = originalIcon.getImage().getScaledInstance(300, 200, Image.SCALE_SMOOTH);
-                JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-                imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-                imagePanel.add(imageLabel, BorderLayout.CENTER);
-
-                // Add some spacing between text and image
-                contentArea.setBorder(BorderFactory.createEmptyBorder(10, 0, 15, 0));
-
-            } catch (Exception e) {
-                System.err.println("Error loading post image: " + e.getMessage());
-                // If image fails to load, show error placeholder
-                JLabel errorLabel = new JLabel("📷 Image not available", SwingConstants.CENTER);
-                errorLabel.setForeground(Color.GRAY);
-                imagePanel.add(errorLabel, BorderLayout.CENTER);
-            }
-        }
-
-        // Assemble the post panel
-        postPanel.add(headerPanel, BorderLayout.NORTH);
-        postPanel.add(contentArea, BorderLayout.CENTER);
-
-        // Only add image panel if there's an image
-        if (post.getImageUrl() != null && !post.getImageUrl().isEmpty()) {
-            postPanel.add(imagePanel, BorderLayout.SOUTH);
-        }
-
-        return postPanel;
-    }
-
-    // Helper method to format timestamp
-    private String formatTimestamp(java.time.LocalDateTime dateTime) {
-        java.time.format.DateTimeFormatter formatter =
-                java.time.format.DateTimeFormatter.ofPattern("MMM dd, yyyy 'at' hh:mm a");
-        return dateTime.format(formatter);
     }
 
     public static void main(String[] args) {
@@ -230,6 +174,6 @@ public class Profile extends JPanel {
         dummyUser.setLastName("Shaheer");
         dummyUser.setUsername("_Shaheer");
         dummyUser.setProfilePicUrl("https://res.cloudinary.com/defyrn0le/image/upload/v1763494798/ahgwizfvo06ab3ndt9zf.jpg");
-        dummyUser.setBio("BSE’28 COMSATS | Aspiring Backend Developer | Focused on Java, OOP, and Database Systems | Eager to Build Real-World Projects");
+        dummyUser.setBio("BSE'28 COMSATS | Aspiring Backend Developer | Focused on Java, OOP, and Database Systems | Eager to Build Real-World Projects");
     }
 }
