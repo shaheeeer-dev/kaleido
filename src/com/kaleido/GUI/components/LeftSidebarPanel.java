@@ -52,6 +52,7 @@ public class LeftSidebarPanel extends JPanel {
 
                     case "Search":
                         System.out.println("Search clicked!");
+                        mainFrame.switchPage(new Search(currentUser, mainFrame));
                         break;
 
                     case "About":
@@ -82,7 +83,7 @@ public class LeftSidebarPanel extends JPanel {
 
         // PFP
         ImageIcon profilePic = null;
-        String picPath = user != null ? user.getProfilePicUrl() : null;
+        String picPath = currentUser != null ? currentUser.getProfilePicUrl() : null;
 
         BufferedImage img = null;
 
@@ -137,7 +138,7 @@ public class LeftSidebarPanel extends JPanel {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 System.out.println("Profile Clicked");
-                mainFrame.switchPage(new Profile(currentUser, mainFrame));
+                mainFrame.switchPage(new Profile(currentUser, currentUser, mainFrame));
             }
         });
 
