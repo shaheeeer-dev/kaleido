@@ -99,9 +99,9 @@ public class About extends JPanel {
         detailsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         String appInfoText =
-                "Kaleido is a modern social media platform designed for students and creators to share content, discover new ideas, and connect with communities. The app features a dynamic feed, user profiles, post creation, and an intuitive sidebar navigation, all wrapped in a sleek, dark-themed UI.\n\n" +
+                "Kaleido is a modern social media platform designed for students and creators to share content, discover new ideas, and connect with communities. The app features a dynamic feed, user profiles, post creation, searching users, Commenting on posts and an intuitive sidebar navigation, all wrapped in a sleek, dark-themed UI.\n\n" +
                 "Developer: Muhammad Shaheer\nStudent ID: FA24-BSE-104\nDegree Program: BSE (Software Engineering)\n" +
-                        "COMSATS University Islamabad, Sahiwal Campus\n\n" +
+                        "COMSATS University Islamabad, Sahiwal Campus, Pakistan\n\n" +
                         "📚 Project Overview:\n" +
                         "• A full-stack social media platform built with Java Swing\n" +
                         "• Cloud-based image storage using Cloudinary\n" +
@@ -134,7 +134,7 @@ public class About extends JPanel {
         detailsLabel.setOpaque(false);
         detailsLabel.setForeground(Color.WHITE);
         detailsLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        detailsLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        detailsLabel.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
 
         // Add detailsLabel directly to detailsPanel (no scroll pane)
         detailsPanel.add(detailsLabel, BorderLayout.CENTER);
@@ -146,7 +146,7 @@ public class About extends JPanel {
         buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JButton PortfolioBtn = new JButton("View Portfolio");
-        PortfolioBtn.setForeground(Color.BLACK);
+        PortfolioBtn.setForeground(new Color(38, 98, 221));
         PortfolioBtn.setBackground(new Color(70, 70, 70));
         PortfolioBtn.setFocusPainted(false);
         PortfolioBtn.setFont(new Font("SansSerif", Font.BOLD, 14));
