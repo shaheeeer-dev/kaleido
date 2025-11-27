@@ -154,7 +154,7 @@ public class EditProfileFrame extends JFrame {
         boolean updated = userDAO.updateUser(currentUser);
 
         if (updated) {
-            JOptionPane.showMessageDialog(this, "Profile updated successfully!");
+            JOptionPane.showMessageDialog(this, "Profile updated successfully! Open profile again to refresh.");
             dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Failed to update profile!", "Error", JOptionPane.ERROR_MESSAGE);
