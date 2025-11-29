@@ -1,14 +1,43 @@
 package com.kaleido.GUI.components;
 
 import com.kaleido.models.Post;
+import com.kaleido.models.User;
+import com.kaleido.models.Comment;
+import com.kaleido.db.LikeDAO;
+import com.kaleido.db.CommentDAO;
 
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.util.List;
 
 public class PostPanel extends JPanel {
+    private Post post;
+    private User currentUser;
+    private LikeDAO likeDAO;
+    private CommentDAO commentDAO;
+    private JButton likeButton;
+    private JButton commentButton;
+    private int likeCount;
+    private int commentCount;
+    private boolean isLiked;
 
-    public PostPanel(Post post) {
+    public PostPanel(Post post, User currentUser) {
+        this.post = post;
+        this.currentUser = currentUser;
+        this.likeDAO = new LikeDAO();
+        this.commentDAO = new CommentDAO();
+
+        // Initialize counts
+        this.likeCount = likeDAO.countLikes(post.getPostId());
+        this.commentCount = commentDAO.getComments(post.getPostId()).size();
+        this.isLiked = likeDAO.isLikedByUser(post.getPostId(), currentUser.getUserID());
+
+        initializeUI();
+        updateButtonTexts();
+    }
+
+    private void initializeUI() {
         setLayout(new BorderLayout());
         setBackground(new Color(25, 25, 27));
         setBorder(BorderFactory.createCompoundBorder(
@@ -23,12 +52,12 @@ public class PostPanel extends JPanel {
         setMaximumSize(new Dimension(width, height));
 
         // Header
-        JPanel headerPanel = createHeader(post);
+        JPanel headerPanel = createHeader();
 
-        // Content - dynamically handles text and images
-        JPanel contentPanel = createContent(post, width);
+        // Content
+        JPanel contentPanel = createContent(width);
 
-        // Engagement buttons
+        // Engagement panel
         JPanel engagementPanel = createEngagementPanel();
 
         add(headerPanel, BorderLayout.NORTH);
@@ -36,7 +65,7 @@ public class PostPanel extends JPanel {
         add(engagementPanel, BorderLayout.SOUTH);
     }
 
-    private JPanel createHeader(Post post) {
+    private JPanel createHeader() {
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(25, 25, 27));
 
@@ -54,7 +83,7 @@ public class PostPanel extends JPanel {
         return headerPanel;
     }
 
-    private JPanel createContent(Post post, int containerWidth) {
+    private JPanel createContent(int containerWidth) {
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBackground(new Color(25, 25, 27));
 
@@ -72,14 +101,78 @@ public class PostPanel extends JPanel {
 
         // Image content (if exists)
         if (post.getImageUrl() != null && !post.getImageUrl().isEmpty()) {
-            JPanel imagePanel = createImagePanel(post, containerWidth);
+            JPanel imagePanel = createImagePanel(containerWidth);
             contentPanel.add(imagePanel, BorderLayout.CENTER);
         }
 
         return contentPanel;
     }
 
-    private JPanel createImagePanel(Post post, int containerWidth) {
+    private JPanel createEngagementPanel() {
+        JPanel engagementPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        engagementPanel.setBackground(new Color(25, 25, 27));
+        engagementPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+
+        // Like button
+        likeButton = new JButton();
+        likeButton.setBackground(new Color(25, 25, 27));
+        likeButton.setForeground(isLiked ? new Color(255, 48, 64) : Color.LIGHT_GRAY);
+        likeButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        likeButton.setFocusPainted(false);
+        likeButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        likeButton.addActionListener(e -> handleLike());
+
+        // Comment button
+        commentButton = new JButton();
+        commentButton.setBackground(new Color(25, 25, 27));
+        commentButton.setForeground(Color.LIGHT_GRAY);
+        commentButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        commentButton.setFocusPainted(false);
+        commentButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        commentButton.addActionListener(e -> showCommentsDialog());
+
+        engagementPanel.add(likeButton);
+        engagementPanel.add(commentButton);
+
+        return engagementPanel;
+    }
+
+    private void handleLike() {
+        if (isLiked) {
+            // Unlike the post
+            likeDAO.removeLike(post.getPostId(), currentUser.getUserID());
+            likeCount--;
+            isLiked = false;
+            likeButton.setForeground(Color.LIGHT_GRAY);
+        } else {
+            // Like the post
+            likeDAO.addLike(post.getPostId(), currentUser.getUserID(), post.getUserId());
+            likeCount++;
+            isLiked = true;
+            likeButton.setForeground(new Color(255, 48, 64)); // Red color for liked state
+        }
+        updateButtonTexts();
+    }
+
+    private void updateButtonTexts() {
+        likeButton.setText("♥ " + likeCount);
+        commentButton.setText("💬 " + commentCount);
+    }
+
+    private void showCommentsDialog() {
+        CommentsDialog dialog = new CommentsDialog(
+                (JFrame) SwingUtilities.getWindowAncestor(this),
+                post,
+                currentUser
+        );
+        dialog.setVisible(true);
+
+        // Refresh comment count after dialog closes
+        commentCount = commentDAO.getComments(post.getPostId()).size();
+        updateButtonTexts();
+    }
+
+    private JPanel createImagePanel(int containerWidth) {
         JPanel imagePanel = new JPanel(new BorderLayout());
         imagePanel.setBackground(new Color(25, 25, 27));
 
@@ -87,34 +180,21 @@ public class PostPanel extends JPanel {
             URL imageUrl = new URL(post.getImageUrl());
             ImageIcon originalIcon = new ImageIcon(imageUrl);
 
-            // Calculate dimensions to maintain aspect ratio and fit within post
-            int maxWidth = containerWidth - 30; // Account for padding
+            // Calculate dimensions
+            int maxWidth = containerWidth - 30;
             int maxHeight = 350;
 
             int originalWidth = originalIcon.getIconWidth();
             int originalHeight = originalIcon.getIconHeight();
 
-            // Calculate scaled dimensions maintaining aspect ratio
             int scaledWidth, scaledHeight;
             double aspectRatio = (double) originalWidth / originalHeight;
 
             if (originalWidth > originalHeight) {
-                // Landscape image
                 scaledWidth = Math.min(originalWidth, maxWidth);
                 scaledHeight = (int) (scaledWidth / aspectRatio);
             } else {
-                // Portrait or square image
                 scaledHeight = Math.min(originalHeight, maxHeight);
-                scaledWidth = (int) (scaledHeight * aspectRatio);
-            }
-
-            // Ensure scaled dimensions don't exceed limits
-            if (scaledWidth > maxWidth) {
-                scaledWidth = maxWidth;
-                scaledHeight = (int) (scaledWidth / aspectRatio);
-            }
-            if (scaledHeight > maxHeight) {
-                scaledHeight = maxHeight;
                 scaledWidth = (int) (scaledHeight * aspectRatio);
             }
 
@@ -132,28 +212,6 @@ public class PostPanel extends JPanel {
         }
 
         return imagePanel;
-    }
-
-    private JPanel createEngagementPanel() {
-        JPanel engagementPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        engagementPanel.setBackground(new Color(25, 25, 27));
-        engagementPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-
-        JButton likeButton = new JButton("♥ Like");
-        JButton commentButton = new JButton("💬 Comment");
-
-        for (JButton button : new JButton[]{likeButton, commentButton}) {
-            button.setBackground(new Color(25, 25, 27));
-            button.setForeground(Color.LIGHT_GRAY);
-            button.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-            button.setFocusPainted(false);
-            button.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        }
-
-        engagementPanel.add(likeButton);
-        engagementPanel.add(commentButton);
-
-        return engagementPanel;
     }
 
     private String formatTimestamp(java.time.LocalDateTime dateTime) {
