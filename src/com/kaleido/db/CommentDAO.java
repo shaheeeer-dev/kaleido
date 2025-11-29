@@ -14,14 +14,18 @@ public class CommentDAO{
 
     // ADD COMMENT + NOTIFICATION
     public void addComment(int postId, int userId, String text, int postOwnerId) {
-        String sql = "INSERT INTO comments (post_id, user_id, comment_text, created_at) VALUES (?, ?, ?, NOW())";
+        // First get the username
+        String username = getUsernameById(userId);
+
+        String sql = "INSERT INTO comments (post_id, user_id, username, comment_text, created_at) VALUES (?, ?, ?, ?, NOW())";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, postId);
             stmt.setInt(2, userId);
-            stmt.setString(3, text);
+            stmt.setString(3, username); // Add username
+            stmt.setString(4, text);
             stmt.executeUpdate();
 
             if (userId != postOwnerId) {
@@ -37,6 +41,27 @@ public class CommentDAO{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    // Helper method to get username by user ID
+    private String getUsernameById(int userId) {
+        String sql = "SELECT username FROM users WHERE user_id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("username");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return "Unknown User";
     }
 
     // DELETE COMMENT
@@ -58,7 +83,12 @@ public class CommentDAO{
     public List<Comment> getComments(int postId) {
         List<Comment> list = new ArrayList<>();
 
-        String sql = "SELECT * FROM comments WHERE post_id = ? ORDER BY created_at ASC";
+        // Updated query to join with users table and get username
+        String sql = "SELECT c.*, u.username " +
+                "FROM comments c " +
+                "JOIN users u ON c.user_id = u.user_id " +
+                "WHERE c.post_id = ? " +
+                "ORDER BY c.created_at ASC";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -71,6 +101,7 @@ public class CommentDAO{
                 c.setCommentId(rs.getInt("comment_id"));
                 c.setPostId(rs.getInt("post_id"));
                 c.setUserId(rs.getInt("user_id"));
+                c.setUsername(rs.getString("username")); // Set the username
                 c.setCommentText(rs.getString("comment_text"));
                 c.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
 
