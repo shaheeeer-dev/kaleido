@@ -141,7 +141,7 @@ public class Profile extends JPanel {
 
         for (Post post : userPosts) {
             // Use the PostPanel component with 4:5 ratio
-            PostPanel postPanel = new PostPanel(post);
+            PostPanel postPanel = new PostPanel(post, currentUser);
             postPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
             centeredPostsPanel.add(postPanel);
             centeredPostsPanel.add(Box.createRigidArea(new Dimension(0, 15)));
