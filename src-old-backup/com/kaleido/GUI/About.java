@@ -100,7 +100,7 @@ public class About extends JPanel {
 
         String appInfoText =
                 "Kaleido is a modern social media platform designed for students and creators to share content, discover new ideas, and connect with communities. The app features a dynamic feed, user profiles, post creation, searching users, Commenting on posts and an intuitive sidebar navigation, all wrapped in a sleek, dark-themed UI.\n\n" +
-                        "Developer: Muhammad Shaheer\nStudent ID: FA24-BSE-104\nDegree Program: BSE (Software Engineering)\n" +
+                "Developer: Muhammad Shaheer\nStudent ID: FA24-BSE-104\nDegree Program: BSE (Software Engineering)\n" +
                         "COMSATS University Islamabad, Sahiwal Campus, Pakistan\n\n" +
                         "📚 Project Overview:\n" +
                         "• A full-stack social media platform built with Java Swing\n" +
