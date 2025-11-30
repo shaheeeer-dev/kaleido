@@ -2,6 +2,7 @@ package com.kaleido.GUI;
 
 import com.kaleido.GUI.components.LeftSidebarPanel;
 import com.kaleido.GUI.components.HeaderPanel;
+import com.kaleido.GUI.components.RightSidebarPanel;
 import com.kaleido.models.User;
 
 import javax.swing.*;
@@ -27,10 +28,7 @@ public class MainFrame extends JFrame {
         add(new LeftSidebarPanel(currentUser, this), BorderLayout.WEST);
 
         // Right sidebar
-        JPanel rightSidebar = new JPanel();
-        rightSidebar.setPreferredSize(new Dimension(300, 0));
-        rightSidebar.setBackground(Color.BLACK);
-        add(rightSidebar, BorderLayout.EAST);
+        add(new RightSidebarPanel(currentUser), BorderLayout.EAST);
 
         // Center content
         centerPanel = new JPanel(new BorderLayout());
