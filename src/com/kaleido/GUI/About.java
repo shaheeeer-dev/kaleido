@@ -99,8 +99,8 @@ public class About extends JPanel {
         detailsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         String appInfoText =
-                "Kaleido is a modern social media platform designed for students and creators to share content, discover new ideas, and connect with communities. The app features a dynamic feed, user profiles, post creation, searching users, Commenting on posts and an intuitive sidebar navigation, all wrapped in a sleek, dark-themed UI.\n\n" +
-                "Developer: Muhammad Shaheer\nStudent ID: FA24-BSE-104\nDegree Program: BSE (Software Engineering)\n" +
+                "Kaleido is a fully-featured social media application built with Java Swing, offering a modern and intuitive platform for content sharing and community engagement. Designed with a sleek dark theme, Kaleido provides users with a seamless social experience.\n\n"+
+                        "Developer: Muhammad Shaheer\nStudent ID: FA24-BSE-104\nDegree Program: BSE (Software Engineering)\n" +
                         "COMSATS University Islamabad, Sahiwal Campus, Pakistan\n\n" +
                         "📚 Project Overview:\n" +
                         "• A full-stack social media platform built with Java Swing\n" +
@@ -113,12 +113,15 @@ public class About extends JPanel {
                         "• Database: MySQL\n" +
                         "• Cloud Storage: Cloudinary API\n" +
                         "• Version Control: Git\n\n" +
-                        "🎯 Features:\n" +
-                        "• User authentication and profiles\n" +
-                        "• Create and share posts with images\n" +
-                        "• Real-time feed updates\n" +
-                        "• Profile customization\n" +
-                        "• Interactive GUI components\n\n" +
+                        "🎯 **Features**:\n" +
+                        "• Authentication & User Profiles\n" +
+                        "• Post Creation (Text/Images/GIFs)\n" +
+                        "• Like & Comment System\n" +
+                        "• Real-time Notifications\n" +
+                        "• User Search & Discovery\n" +
+                        "• Community Messaging\n" +
+                        "• Shuffled Feed\n" +
+                        "• Dark Theme UI\n\n" +
                         "📖 Learning Outcomes:\n" +
                         "• Object-Oriented Programming principles\n" +
                         "• Database design and management\n" +
