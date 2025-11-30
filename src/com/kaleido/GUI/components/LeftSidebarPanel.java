@@ -43,7 +43,8 @@ public class LeftSidebarPanel extends JPanel {
                 switch (label) {
                     case "Home":
                         System.out.println("Home clicked!");
-                        mainFrame.switchPage(new Feed(currentUser, mainFrame));
+                        Feed freshFeed = new Feed(currentUser, mainFrame);
+                        mainFrame.switchPage(freshFeed);
                         break;
 
                     case "Create":
