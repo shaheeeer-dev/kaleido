@@ -115,7 +115,6 @@ public class UserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return users;
     }
     public User getUserById(int userId) {
