@@ -27,7 +27,7 @@ It provides users with a sleek dark-themed experience to post, connect, and enga
 <hr>
 <h2>📥 Installation & Setup</h2>  
 <ol>
-  <li>Download the Kaleido App from : <a href="kaleido.netlify.app"></a></li>
+  <li>Download the Kaleido App from : <a href="[kaleido.netlify.app](https://kaleidoapp.netlify.app/)"></a></li>
   <li>Extract the Zip folder</li>
   <li>Click <code>RunKaleido.bat</code> for Windows</li>
   <li>Click <code>RunKaleido.command</code> for MacOs</li>
