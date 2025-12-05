@@ -1,3 +1,4 @@
+# Kaleido — Desktop Social Media Application
 <h2>📌 Overview</h2>
 <p>
 <strong>Kaleido</strong> is a modern and intuitive <strong>desktop-based social media application</strong> built with Java Swing.  
