@@ -5,6 +5,8 @@
 It provides users with a sleek dark-themed experience to post, connect, and engage with a growing digital community — all from a standalone desktop app.
 </p>
 <hr>
+<img width="1967" height="1141" alt="548dd39d-bd28-494f-b3b8-9c5ee194334b" src="https://github.com/user-attachments/assets/7425a5fa-a1e1-4f49-9a94-8f0a9443640c" />
+
 <h2>🔑 Key Features</h2>  
   <ul>
   <li><strong>Native Desktop Experience</strong> — fully standalone, no browser required</li>
