@@ -23,7 +23,7 @@ It provides users with a sleek dark-themed experience to post, connect, and enga
 <ul>
   <li><strong>Backend (Java-OOP)</strong></li>
   <li><strong>Frontend (Swing GUI)</strong></li>
-  <li><strong>MySQL / Cloud Hosted DB</strong></li>
+  <li><strong>MySQL / Cloud Hosted DB(But the source code is based on localHost)</strong></li>
   <li><strong>JDBC</strong> for database connectivity</li>
 </ul>
 <hr>
